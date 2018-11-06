@@ -44,7 +44,7 @@ Follow the instructions below for local run.
 
 If you don't have minikube follow the instruction on their nice [installation guide](https://kubernetes.io/docs/tasks/tools/install-minikube/)
 
-Don't forget to change kubectl context to minikube and docker enviroment after `minikube start`
+Don't forget to change `kubectl` context to minikube and docker enviroment after `minikube start`
 
 ```bash
 kubectl config use-context minikube
