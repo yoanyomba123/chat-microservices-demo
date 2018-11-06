@@ -1,0 +1,22 @@
+{
+  "plugins": ["security"],
+  "parser": "babel-eslint",
+  "extends": ["airbnb", "plugin:security/recommended"],
+  "globals": {
+    "process": true
+  },
+  "env": {
+    "browser": true,
+    "node": true,
+    "es6": true
+  },
+  "rules": {
+    "no-bitwise": "off",
+    "import/no-extraneous-dependencies": [
+      "error",
+      {
+        "devDependencies": true
+      }
+    ]
+  }
+}

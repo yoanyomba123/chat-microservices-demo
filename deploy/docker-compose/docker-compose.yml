@@ -1,0 +1,80 @@
+version: '3'
+services:
+  nginx:
+    build:
+      context: ../../
+      dockerfile: deploy/docker/00_nginx.Dockerfile
+    ports:
+      - '80:80'
+    links:
+      - 'web:frontend'
+      - 'auth:auth'
+      - 'chat:chat'
+    networks:
+      - net-nginx
+    depends_on:
+      - chat
+      - auth
+      - web
+      - mongosrv
+      - redis
+    command: nginx
+  redis:
+    build:
+      context: ../../
+      dockerfile: deploy/docker/01_redis.Dockerfile
+    ports:
+      - '6379:6379'
+    networks:
+      - net-redis
+      - net-chat
+    volumes:
+      - 'redis-data:/data/redis'
+  mongosrv:
+    build:
+      context: ../../
+      dockerfile: deploy/docker/02_mongodb.Dockerfile
+    ports:
+      - '27017:27017'
+    networks:
+      - net-mongo
+    volumes:
+      - 'mongodb-data:/data/db'
+  chat:
+    build:
+      context: ../../dist/
+      dockerfile: ../deploy/docker/04_chat.Dockerfile
+    networks:
+      - net-nginx
+      - net-redis
+    depends_on:
+      - redis
+  web:
+    build:
+      context: ../../dist/
+      dockerfile: ../deploy/docker/05_front-end.Dockerfile
+    networks:
+      - net-nginx
+    depends_on:
+      - auth
+      - chat
+  auth:
+    build:
+      context: ../../dist/
+      dockerfile: ../deploy/docker/06_auth.Dockerfile
+    networks:
+      - net-nginx
+      - net-mongo
+    volumes:
+      - 'static-data:/data/static'
+    depends_on:
+      - mongosrv
+networks:
+  net-nginx: null
+  net-mongo: null
+  net-redis: null
+  net-chat: null
+volumes:
+  mongodb-data: null
+  redis-data: null
+  static-data: null
